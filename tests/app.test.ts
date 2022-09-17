@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import { createUser } from './factories/userFactory';
 import app from '../src/app';
 import client from '../src/database/database';
+import { createTest } from './factories/testFactory';
 
 afterAll(async () => {
   await client.$disconnect();
@@ -38,6 +39,32 @@ describe('Testing POST /signin', () => {
     const user = await createUser();
     delete user.confirmPassword;
     const result = await supertest(app).post('/signin').send(user);
+    expect(result.status).toEqual(401);
+  });
+});
+
+describe('Testing POST /tests/create', () => {
+  it('Returns 201 when a test is created successfully', async () => {
+    const newTest = await createTest();
+    const tokenFromValidUser =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlhdCI6MTY2MzM5NjAzMn0.h-ZsqsHiC2NhASjF-pPAtUnGh0fUg7UIFD5j8M1CQko';
+    const result = await supertest(app)
+      .post('/tests/create')
+      .send(newTest)
+      .set({
+        Authorization: `Bearer ${tokenFromValidUser}`,
+      });
+    expect(result.status).toEqual(201);
+  });
+
+  it('Returns 401 when the token is not sent', async () => {
+    const newTest = await createTest();
+    const result = await supertest(app)
+      .post('/tests/create')
+      .send(newTest)
+      .set({
+        Authorization: `Bearer `,
+      });
     expect(result.status).toEqual(401);
   });
 });

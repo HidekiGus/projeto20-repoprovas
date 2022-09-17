@@ -10,6 +10,5 @@ export async function createUser(req: Request, res: Response) {
 export async function signIn(req: Request, res: Response) {
   const { email, password } = req.body;
   const token = await userService.signIn(email, password);
-  console.log(typeof token);
   res.status(200).send(token);
 }

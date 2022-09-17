@@ -41,3 +41,8 @@ export async function getUserByEmail(email: string) {
   });
   return user.id;
 }
+
+export async function findUserById(id: number) {
+  const user = await client.users.findUnique({ where: { id } });
+  return user;
+}
