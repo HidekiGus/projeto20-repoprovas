@@ -3,13 +3,11 @@ import { createUser } from './factories/userFactory';
 import app from '../src/app';
 import client from '../src/database/database';
 
-afterAll(() => {
-  afterAll(async () => {
-    await client.$disconnect();
-  });
+afterAll(async () => {
+  await client.$disconnect();
 });
 
-describe('Testing user routes', () => {
+describe('Testing POST /signup', () => {
   it('Returns 201 when a new user is created', async () => {
     const newUser = await createUser();
 
@@ -23,5 +21,23 @@ describe('Testing user routes', () => {
     await supertest(app).post('/signup').send(newUser);
     const result = await supertest(app).post('/signup').send(newUser);
     expect(result.status).toEqual(409);
+  });
+});
+
+describe('Testing POST /signin', () => {
+  it('Returns 200 and a token when a user signs in correctly', async () => {
+    const user = await createUser();
+    await supertest(app).post('/signup').send(user);
+    delete user.confirmPassword;
+    const result = await supertest(app).post('/signin').send(user);
+    expect(result.status).toEqual(200);
+    expect(result.body).toBeInstanceOf(Object);
+  });
+
+  it('Returns 401 when a user sign in with invalid credentials', async () => {
+    const user = await createUser();
+    delete user.confirmPassword;
+    const result = await supertest(app).post('/signin').send(user);
+    expect(result.status).toEqual(401);
   });
 });
