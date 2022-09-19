@@ -67,3 +67,27 @@ export async function getTestsByTerm() {
   });
   return terms;
 }
+
+export async function getTestsByTeacher() {
+  const result = await client.teachers.findMany({
+    select: {
+      name: true,
+      teachersDisciplines: {
+        select: {
+          discipline: {
+            select: {
+              name: true,
+            },
+          },
+          tests: {
+            select: {
+              name: true,
+              category: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return result;
+}

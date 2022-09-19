@@ -32,15 +32,13 @@ export async function createTest(newTest, authorization: string) {
     newTest.disciplineId
   );
 
-  console.log(teacherDisciplineId);
-
   if (teacherDisciplineId === 0) {
     throw {
       type: 'notFound',
       message: 'There is not a discipline with this teacher!',
     };
   }
-  console.log('ta aqui');
+
   const newTestData = {
     name: newTest.name,
     pdfUrl: newTest.pdfUrl,
@@ -52,5 +50,10 @@ export async function createTest(newTest, authorization: string) {
 
 export async function getTestsByTerm() {
   const tests = await testRepository.getTestsByTerm();
+  return tests;
+}
+
+export async function getTestsByTeacher() {
+  const tests = await testRepository.getTestsByTeacher();
   return tests;
 }

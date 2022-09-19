@@ -12,3 +12,8 @@ export async function getTestsByTerm(req: Request, res: Response) {
   const tests: Object = await testService.getTestsByTerm();
   res.status(200).send(tests);
 }
+
+export async function getTestsByTeacher(req: Request, res: Response) {
+  const tests: Object = await testService.getTestsByTeacher();
+  res.status(200).send(tests);
+}

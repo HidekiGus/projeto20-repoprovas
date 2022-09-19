@@ -69,9 +69,18 @@ describe('Testing POST /tests/create', () => {
   });
 });
 
-describe('Testing GET /tests', () => {
-  it('Returns an array of objects when requested', async () => {
-    const result = await supertest(app).get('/tests');
+describe('Testing GET /tests/term', () => {
+  it('Returns an array of tests grouped by term when requested', async () => {
+    const result = await supertest(app).get('/tests/term');
     expect(result.body).toBeInstanceOf(Object);
+    expect(result.status).toEqual(200);
+  });
+});
+
+describe('Testing GET /tests/teacher', () => {
+  it('Returns an array of tests grouped by teacher when requested', async () => {
+    const result = await supertest(app).get('/tests/teacher');
+    expect(result.body).toBeInstanceOf(Object);
+    expect(result.status).toEqual(200);
   });
 });
