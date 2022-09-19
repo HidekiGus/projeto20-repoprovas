@@ -5,6 +5,7 @@
   "main": "./src/server.ts",
   "scripts": {
     "test": "npx dotenv-cli -e .env.test jest -i",
+    "build": "tsc",
     "start": "npx ts-node ./src/server.ts",
     "dev": "npx nodemon ./src/server.ts"
   },

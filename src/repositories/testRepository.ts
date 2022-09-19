@@ -26,7 +26,6 @@ export async function checkIfDisciplineIdExists(disciplineId: number) {
   const discipline = await client.disciplines.findUnique({
     where: { id: disciplineId },
   });
-  console.log(discipline !== null);
   return discipline !== null;
 }
 
