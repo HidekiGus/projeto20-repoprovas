@@ -18,6 +18,6 @@ export default function errorHandler(
   if (error.type === 'unprocessableEntity') {
     return res.status(422).send(error.message);
   }
-  res.status(500).send(error);
+  res.status(500).send(error.message);
   //res.sendStatus(500);
 }

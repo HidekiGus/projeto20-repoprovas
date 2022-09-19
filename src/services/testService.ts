@@ -13,15 +13,14 @@ export async function createTest(newTest, authorization: string) {
   const jwtToken = await getAuthorization(authorization);
   const userId = await resolveJWT(jwtToken);
   await findUserById(userId);
-  const teacherExists = await testRepository.checkIfTeacherIdExists(
+  const teacherExists: Boolean = await testRepository.checkIfTeacherIdExists(
     newTest.teacherId
   );
-  const categoryExists = await testRepository.checkIfCategoryIdExists(
+  const categoryExists: Boolean = await testRepository.checkIfCategoryIdExists(
     newTest.categoryId
   );
-  const disciplineExists = await testRepository.checkIfDisciplineIdExists(
-    newTest.disciplineId
-  );
+  const disciplineExists: Boolean =
+    await testRepository.checkIfDisciplineIdExists(newTest.disciplineId);
   if (!teacherExists || !categoryExists || !disciplineExists) {
     throw {
       type: 'unprocessableEntity',
@@ -32,6 +31,16 @@ export async function createTest(newTest, authorization: string) {
     newTest.teacherId,
     newTest.disciplineId
   );
+
+  console.log(teacherDisciplineId);
+
+  if (teacherDisciplineId === 0) {
+    throw {
+      type: 'notFound',
+      message: 'There is not a discipline with this teacher!',
+    };
+  }
+  console.log('ta aqui');
   const newTestData = {
     name: newTest.name,
     pdfUrl: newTest.pdfUrl,
@@ -39,4 +48,9 @@ export async function createTest(newTest, authorization: string) {
     teacherDisciplineId,
   };
   await testRepository.createTest(newTestData);
+}
+
+export async function getTestsByTerm() {
+  const tests = await testRepository.getTestsByTerm();
+  return tests;
 }

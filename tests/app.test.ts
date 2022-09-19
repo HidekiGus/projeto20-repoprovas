@@ -68,3 +68,10 @@ describe('Testing POST /tests/create', () => {
     expect(result.status).toEqual(401);
   });
 });
+
+describe('Testing GET /tests', () => {
+  it('Returns an array of objects when requested', async () => {
+    const result = await supertest(app).get('/tests');
+    expect(result.body).toBeInstanceOf(Object);
+  });
+});

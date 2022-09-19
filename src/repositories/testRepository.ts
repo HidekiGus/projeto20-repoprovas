@@ -22,12 +22,11 @@ export async function checkIfCategoryIdExists(
   return category !== null;
 }
 
-export async function checkIfDisciplineIdExists(
-  disciplineId: number
-): Promise<Boolean> {
+export async function checkIfDisciplineIdExists(disciplineId: number) {
   const discipline = await client.disciplines.findUnique({
     where: { id: disciplineId },
   });
+  console.log(discipline !== null);
   return discipline !== null;
 }
 
@@ -35,8 +34,36 @@ export async function findTeachersDisciplinesId(
   teacherId: number,
   disciplineId: number
 ) {
-  const result = await client.teachersDisciplines.findMany({
-    where: { teacherId, disciplineId },
+  const result: number =
+    await client.$executeRaw`SELECT td.id as Id FROM "teachersDisciplines" td WHERE td."teacherId"=${teacherId} AND td."disciplineId"=${disciplineId};`;
+  return result;
+}
+
+export async function getTestsByTerm() {
+  const terms = await client.terms.findMany({
+    select: {
+      number: true,
+      disciplines: {
+        select: {
+          name: true,
+          teachersDisciplines: {
+            select: {
+              tests: {
+                select: {
+                  name: true,
+                  pdfUrl: true,
+                },
+              },
+              teachers: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
-  return result[0].id;
+  return terms;
 }
